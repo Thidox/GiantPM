@@ -1,0 +1,7 @@
+name: GiantPM
+main: nl.giantit.bukkit.GiantPM.GiantPM
+version: 2.0
+commands:
+    pm:
+        desription: GiantPM
+        usage: /pm help
