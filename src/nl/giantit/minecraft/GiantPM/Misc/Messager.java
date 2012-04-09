@@ -1,6 +1,6 @@
-package nl.giantit.bukkit.GiantPM.Misc;
+package nl.giantit.minecraft.GiantPM.Misc;
 
-import nl.giantit.bukkit.GiantPM.GiantPM;
+import nl.giantit.minecraft.GiantPM.GiantPM;
 import org.bukkit.entity.Player;
 
 /**
@@ -32,7 +32,7 @@ public class Messager {
 	}
 
 	public static void broadcast (String message) {
-		for(Player p : GiantPM.Server.getOnlinePlayers()) {
+		for(Player p : GiantPM.getPlugin().getSrvr().getOnlinePlayers()) {
 			p.sendMessage(parse(message));
 		}
 	}

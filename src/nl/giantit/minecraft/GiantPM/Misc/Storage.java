@@ -1,4 +1,4 @@
-package nl.giantit.bukkit.GiantPM.Misc;
+package nl.giantit.minecraft.GiantPM.Misc;
 
 import java.util.HashMap;
 

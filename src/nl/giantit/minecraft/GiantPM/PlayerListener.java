@@ -1,9 +1,7 @@
-package nl.giantit.bukkit.GiantPM;
+package nl.giantit.minecraft.GiantPM;
 
-import nl.giantit.bukkit.GiantPM.Misc.Messager;
+import nl.giantit.minecraft.GiantPM.Misc.Messager;
 
-//import java.util.logging.Level;
-//import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -71,12 +69,12 @@ public class PlayerListener implements Listener {
 					reply.add("reply");
 
 					if(containsIgnoreCase(reply, tmp[0])) {
-						Player target = (Player) plugin.Storage.get(player.getName());
+						Player target = (Player) plugin.getStorageHandler().get(player.getName());
 						if(target == null) {
 							Messager.say("&6Sorry no one to reply to! :(");
 							event.setCancelled(true);
 						}else{
-							plugin.Storage.set(target.getName(), player, true);
+							plugin.getStorageHandler().set(target.getName(), player, true);
 							Messager.say(target, "&2" + player.getName() + " &6whispers&f: &3" + msg);
 							Messager.say("&6Sending private message reply to&f: &2" + target.getName());
 							Messager.say("&6message&f: &3" + msg);
@@ -94,10 +92,10 @@ public class PlayerListener implements Listener {
 
 							user = Messager.clean(user);
 
-							if(plugin.Server.getPlayer(user) == null)
+							if(plugin.getSrvr().getPlayer(user) == null)
 								continue;
 
-							receiverts.add(plugin.Server.getPlayer(user));
+							receiverts.add(plugin.getSrvr().getPlayer(user));
 
 
 							/*Player receiver = plugin.Server.getPlayer(user);
@@ -115,7 +113,7 @@ public class PlayerListener implements Listener {
 										receivers += "&f, &2";
 									receivers += receiver.getName();
 
-									plugin.Storage.set(receiver.getName(), player, true);
+									plugin.getStorageHandler().set(receiver.getName(), player, true);
 
 									Messager.say(receiver, "&2" + player.getName() + " &6whispers&f: &3" + msg);
 									msged++;
