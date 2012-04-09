@@ -15,15 +15,6 @@ public class Messager {
 		Messager.player = sender;
 	}
 
-	/**
-	 * Parses the original string against color specific codes. This one converts &[code] to §[code]
-	 * Example:
-	 * Messaging.parse("Hello &2world!"); // returns: Hello §2world!
-	 *
-	 * @param input The original string used for conversions.
-	 *
-	 * @return <code>String</code> - The parsed string after conversion.
-	 */
 	public static String parse(String input) {
 		return input.replaceAll("(&([a-fA-F0-9]))", "§$2").replace("\\\\\u00A7", "&");
 	}
