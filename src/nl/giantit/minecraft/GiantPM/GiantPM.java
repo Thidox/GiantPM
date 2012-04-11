@@ -1,11 +1,11 @@
 package nl.giantit.minecraft.GiantPM;
 
-import nl.giantit.minecraft.GiantPM.Executors.chat;
-import nl.giantit.minecraft.GiantPM.Misc.Messages;
-import nl.giantit.minecraft.GiantPM.Misc.Storage;
 import nl.giantit.minecraft.GiantPM.core.config;
 import nl.giantit.minecraft.GiantPM.core.perm;
 import nl.giantit.minecraft.GiantPM.core.Database.db;
+import nl.giantit.minecraft.GiantPM.Executors.chat;
+import nl.giantit.minecraft.GiantPM.Listeners.*;
+import nl.giantit.minecraft.GiantPM.Misc.Messages;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +32,6 @@ public class GiantPM extends JavaPlugin {
 	private perm perms;
 	private chat chat;
 	private Messages msgHandler;
-	private Storage storHandler;
 	private String name, dir, pubName;
 	private String bName = "Chatty Cow";
 	
@@ -61,13 +60,34 @@ public class GiantPM extends JavaPlugin {
 			
 			extractDefaultFile("conf.yml");
 		}
+		
 		config conf = config.Obtain();
-		
-		storHandler = new Storage();
-		
-		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-		
-		log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
+		try {
+			conf.loadConfig(configFile);
+			this.database = new db(this);
+			
+			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
+			if(conf.getBoolean("GiantPM.permissions.usePermissions") == true) {
+				if(conf.getString("GiantPM.permissions.permissionEngine").equals("sperm")) {
+					setPermMan(new perm());
+				}
+			}
+			
+			pubName = conf.getString("GiantPM.global.name");
+			chat = new chat(this);
+			msgHandler = new Messages(this);
+			
+			getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+			
+			log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
+		}catch(Exception e) {
+			log.log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
+			if(conf.getBoolean("GiantPM.global.debug")) {
+				log.log(Level.INFO, "" + e);
+				e.printStackTrace();
+			}
+			Server.getPluginManager().disablePlugin(this);
+		}
 	}
 	
 	@Override
@@ -118,10 +138,6 @@ public class GiantPM extends JavaPlugin {
 	
 	public Server getSrvr() {
 		return getServer();
-	}
-	
-	public Storage getStorageHandler() {
-		return this.storHandler;
 	}
 	
 	public Messages getMsgHandler() {
