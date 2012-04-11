@@ -1,0 +1,20 @@
+version: 0.1
+main:
+    whispers: C_BLUE%player C_YELLOWwhispers C_WHITE%msg
+    whisperMsg: C_YELLOWmessage C_WHITE%msg
+    whisperTo: C_YELLOWSending private message to C_BLUE%receiverC_YELLOW!
+    repliedTo: C_YELLOWSending private message reply to C_BLUE%receiverC_YELLOW!
+    channelJoined: C_YELLOWYou have successfully joined the conversation!
+    channelLeft: C_YELLOWYou have successfully left the conversation!
+    joinedChannel: C_YELLOWPlayer C_BLUE%player C_YELLOWhas joined the conversation!
+    leftChannel: C_YELLOWPlayer C_BLUE%player C_YELLOWhas left the conversation!
+    removedOfflinePlayer: C_YELLOWRemoved offline player C_BLUE%player C_YELLOWfrom the conversation!
+    channelStateChanged: C_YELLOWYou have successfully changed the conversation state to C_BLUE%stateC_YELLOW!
+    whisperToCommaSeperator: C_YELLOW, C_BLUE
+admin:
+    none: no messages!
+errors:
+    noReplyTarget: C_REDWe are sorry but there seems to be noone you can reply to!
+    channelIsPrivate: C_REDThe conversation you were trying to join is private!
+    playerMuted: C_REDYou can not send a message to muted player C_BLUE%playerC_RED!
+    partialNamePassed: C_REDYou passed a partial name! Please type "C_WHITEyesC_RED" to confirm that you ment C_BLUE%player C_REDwith C_BLUE%partialC_RED!
