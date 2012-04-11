@@ -19,14 +19,12 @@ public class Muter {
 	
 	private Player p;
 	private HashMap<Player, Integer> muted = new HashMap<Player, Integer>();
-	private ArrayList<Player> mutedby = new ArrayList<Player>();
 	
 	private void loadMutes() {
 		db DB = db.Obtain();
 		
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("id");
-		fields.add("owner");
 		fields.add("muted");
 		
 		HashMap<String, String> where = new HashMap<String, String>();
@@ -34,24 +32,12 @@ public class Muter {
 		
 		ArrayList<HashMap<String, String>> mResSet = DB.select(fields).from("#__muted").where(where).execQuery();
 		
-		where = new HashMap<String, String>();
-		where.put("muted", p.getName());
-		ArrayList<HashMap<String, String>> mbResSet = DB.select(fields).from("#__muted").where(where).execQuery();
-		
 		for(HashMap<String, String> res : mResSet) {
 			Player m = GiantPM.getPlugin().getSrvr().getPlayer(res.get("muted"));
 			if(m != null) {
 				muted.put(m, Integer.parseInt(res.get("id")));
 			}else
 				GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + p.getName() + ":" + res.get("muted") + ")");
-		}
-		
-		for(HashMap<String, String> res : mbResSet) {
-			Player m = GiantPM.getPlugin().getSrvr().getPlayer(res.get("owner"));
-			if(m != null) {
-				mutedby.add(m);
-			}else
-				GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + res.get("owner") + ":" + p.getName() + ")");
 		}
 	}
 	
@@ -136,7 +122,7 @@ public class Muter {
 	}
 	
 	public boolean isMutedBy(Player m) {
-		return this.mutedby.contains(m);
+		return Muter.getMuter(p).isMuted(p);
 	}
 	
 	public static Muter getMuter(Player p) {
