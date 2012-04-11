@@ -27,9 +27,9 @@ public class chat {
 		if(args.length == 0 || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h") || args[0].equalsIgnoreCase("?")) {
 			help.help(player, args);
 		}else if(Misc.isEitherIgnoreCase(args[0], "mute", "m")) {
-			//mute.mute(player, args);
+			mute.mute(player, args);
 		}else if(Misc.isEitherIgnoreCase(args[0], "umute", "um")) {
-			//mute.unmute(player, args);
+			mute.unmute(player, args);
 		}else{
 			Heraut.say(player, "Ok, we have no friggin clue what you are on about, so how about we just send you our help page?");
 			help.help(player, args);
