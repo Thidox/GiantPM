@@ -84,7 +84,6 @@ public class GiantPM extends JavaPlugin {
 			log.log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
 			if(conf.getBoolean("GiantPM.global.debug")) {
 				log.log(Level.INFO, "" + e);
-				e.printStackTrace();
 			}
 			Server.getPluginManager().disablePlugin(this);
 		}
