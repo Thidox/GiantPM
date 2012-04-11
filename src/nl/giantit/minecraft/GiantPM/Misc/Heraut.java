@@ -22,6 +22,10 @@ public class Heraut {
         return input.replaceAll("(&([a-fA-F0-9]))", "§$2").replace("\\\\\u00A7", "&");
     }
 	
+	public static String clean(String input) {
+		return input.replaceAll("(&([a-fA-F0-9]))", "");
+	}
+	
 	public static void say (String message) {
 		player.sendMessage(parse(message));
 	}
