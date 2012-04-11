@@ -33,7 +33,7 @@ public class GiantPM extends JavaPlugin {
 	private chat chat;
 	private Messages msgHandler;
 	private String name, dir, pubName;
-	private String bName = "Chatty Cow";
+	private String bName = "Speaking Closet";
 	
 	public static final Logger log = Logger.getLogger("Minecraft");
 	
