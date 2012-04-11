@@ -39,7 +39,18 @@ public class Misc {
 		for(String hay : haystack) {
 			hay = hay.replace("[", "");
 			hay = hay.replace("]", "");
-			if(hay.toLowerCase().equalsIgnoreCase(needle.toLowerCase())) {
+			if(hay.equals(needle)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static Boolean containsIgnoreCase(List<String> haystack, String needle) {
+		for(String hay : haystack) {
+			hay = hay.replace("[", "");
+			hay = hay.replace("]", "");
+			if(hay.equalsIgnoreCase(needle)) {
 				return true;
 			}
 		}
