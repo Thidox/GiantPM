@@ -100,14 +100,11 @@ public class GiantPM extends JavaPlugin {
 			sender.sendMessage("Who the hell are you?!");
 			return true;
 		}
+		
 		if (cmd.getName().equalsIgnoreCase("pm")) {
-			chat.exec(sender, cmd, commandLabel, args);
-			/*if(args.length == 0 || args[0].equals("help")) {
-				Messager.say((Player) sender, "To use private messaging use following syntax:");
-				Messager.say((Player) sender, "[player](, [player]): [message]");
-			}*/
-			return true;
+			return chat.exec(sender, cmd, commandLabel, args);
 		}
+		
 		return false;
 	}
 	
