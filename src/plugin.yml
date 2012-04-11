@@ -1,7 +1,11 @@
 name: GiantPM
-main: nl.giantit.bukkit.GiantPM.GiantPM
+main: nl.giantit.minecraft.GiantPM.GiantPM
 version: 2.0
 commands:
     pm:
         desription: GiantPM
         usage: /pm help
+permissions:
+    giantpm.admin.fuckprivacy:
+        description: Enables admin to override conversation privacy settings
+        default: op
