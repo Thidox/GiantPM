@@ -4,10 +4,12 @@ import nl.giantit.minecraft.GiantPM.GiantPM;
 import nl.giantit.minecraft.GiantPM.core.Database.db;
 
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.Map;
 
 /**
  *
@@ -15,16 +17,16 @@ import java.util.logging.Level;
  */
 public class Muter {
 	
-	private static HashMap<Player, Muter> instance = new HashMap<Player, Muter>();
+	private static HashMap<OfflinePlayer, Muter> instance = new HashMap<OfflinePlayer, Muter>();
 	
-	private Player p;
-	private HashMap<Player, Integer> muted = new HashMap<Player, Integer>();
+	private OfflinePlayer p;
+	private ArrayList<OfflinePlayer> muted = new ArrayList<OfflinePlayer>();
+	private boolean init = false;
 	
 	private void loadMutes() {
 		db DB = db.Obtain();
 		
 		ArrayList<String> fields = new ArrayList<String>();
-		fields.add("id");
 		fields.add("muted");
 		
 		HashMap<String, String> where = new HashMap<String, String>();
@@ -32,73 +34,85 @@ public class Muter {
 		
 		ArrayList<HashMap<String, String>> mResSet = DB.select(fields).from("#__muted").where(where).execQuery();
 		
-		for(HashMap<String, String> res : mResSet) {
-			Player m = GiantPM.getPlugin().getSrvr().getPlayer(res.get("muted"));
-			if(m != null) {
-				muted.put(m, Integer.parseInt(res.get("id")));
-			}else
-				GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + p.getName() + ":" + res.get("muted") + ")");
-		}
-	}
-	
-	private void addMute(Player m) {
-		db DB = db.Obtain();
-		
-		ArrayList<String> fields = new ArrayList<String>();
-		fields.add("owner");
-		fields.add("muted");
-		
-		ArrayList<HashMap<Integer, HashMap<String, String>>> values = new ArrayList<HashMap<Integer, HashMap<String, String>>>();
-		HashMap<Integer, HashMap<String, String>> tmp = new HashMap<Integer, HashMap<String, String>>();
-		
-		int i = 0;
-		for(String field : fields) {
-			HashMap<String, String> temp = new HashMap<String, String>();
-			if(field.equalsIgnoreCase("owner")) {
-				temp.put("data", p.getName());
-				tmp.put(i, temp);
-			}else if(field.equalsIgnoreCase("muted")) {
-				temp.put("data", m.getName());
-				tmp.put(i, temp);
+		if(mResSet.size() > 0) {
+			HashMap<String, String> res = mResSet.get(0);
+			if(res.get("muted").contains(";")) {
+				for(String u : res.get("muted").split(";")) {
+					OfflinePlayer m = GiantPM.getPlugin().getSrvr().getOfflinePlayer(u);
+					if(m != null) {
+						muted.add(m);
+					}else
+						GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + p.getName() + ":" + u + ")");
+				}
 			}
-			
-			i++;
+		}else{
+			init = true;
 		}
-		values.add(tmp);
-		
-		DB.insert("#__muted", fields, values).updateQuery();
-		
-		fields = new ArrayList<String>();
-		fields.add("id");
-		
-		HashMap<String, String> where = new HashMap<String, String>();
-		where.put("owner", p.getName());
-		where.put("muted", m.getName());
-		
-		ArrayList<HashMap<String, String>> mResSet = DB.select(fields).from("#__muted").where(where).execQuery();
-		muted.put(m, Integer.parseInt(mResSet.get(0).get("id")));
 	}
 	
-	private void unMute(Player m) {
+	
+	private void saveMutes() {
 		db DB = db.Obtain();
 		
-		HashMap<String, String> where = new HashMap<String, String>();
-		where.put("owner", p.getName());
-		where.put("muted", m.getName());
+		String m = "";
+		for(OfflinePlayer u : muted) {
+			m += u.getName() + ";";
+		}
 		
-		DB.delete("#__muted").where(where).updateQuery();
-		muted.remove(m);
+		if(!init) {
+			HashMap<String, String> tmp = new HashMap<String, String>();
+			tmp.put("muted", m);
+			
+			HashMap<String, String> where = new HashMap<String, String>();
+			where.put("owner", p.getName());
+
+			DB.update("#__muted").set(tmp).where(where).updateQuery();
+		}else{
+			ArrayList<String> fields = new ArrayList<String>();
+			fields.add("owner");
+			fields.add("muted");
+			
+			ArrayList<HashMap<Integer, HashMap<String, String>>> values = new ArrayList<HashMap<Integer, HashMap<String, String>>>();
+			HashMap<Integer, HashMap<String, String>> tmp = new HashMap<Integer, HashMap<String, String>>();
+			
+			int i = 0;
+			for(String field : fields) {
+				HashMap<String, String> temp = new HashMap<String, String>();
+				if(field.equalsIgnoreCase("owner")) {
+					temp.put("data", p.getName());
+					tmp.put(i, temp);
+				}else if(field.equalsIgnoreCase("muted")) {
+					temp.put("data", m);
+					tmp.put(i, temp);
+				}
+
+				i++;
+			}
+			values.add(tmp);
+
+			DB.insert("#__muted", fields, values).updateQuery();
+		}
 	}
 	
-	private Muter(Player p) {
+	private Muter(OfflinePlayer p) {
 		this.p = p;
 		this.loadMutes();
 	}
 	
-	public MuterResp mute(Player m) {
+	public String getMutesString() {
+		String s = "";
+		
+		for(OfflinePlayer r : muted) {
+			s += r.getName() + ", ";
+		}
+		
+		return s;
+	}
+	
+	public MuterResp mute(OfflinePlayer m) {
 		if(m != null) {
-			if(!muted.containsKey(m)) {
-				addMute(m);
+			if(!muted.contains(m)) {
+				muted.add(m);
 				return new MuterResp(MuterResp.MuterRespType.SUCCESS, "");
 			}else
 				return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is already muted!");
@@ -106,10 +120,10 @@ public class Muter {
 			return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is null!");
 	}
 	
-	public MuterResp unmute(Player m) {
+	public MuterResp unmute(OfflinePlayer m) {
 		if(m != null) {
-			if(muted.containsKey(m)) {
-				unMute(m);
+			if(muted.contains(m)) {
+				muted.remove(m);
 				return new MuterResp(MuterResp.MuterRespType.SUCCESS, "");
 			}else
 				return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is not muted!");
@@ -117,15 +131,15 @@ public class Muter {
 			return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is null!");
 	}
 	
-	public boolean isMuted(Player m) {
-		return this.muted.containsKey(m);
+	public boolean isMuted(OfflinePlayer m) {
+		return muted.contains(m);
 	}
 	
-	public boolean isMutedBy(Player m) {
-		return Muter.getMuter(p).isMuted(p);
+	public boolean isMutedBy(OfflinePlayer m) {
+		return Muter.getMuter(m).isMuted(m);
 	}
 	
-	public static Muter getMuter(Player p) {
+	public static Muter getMuter(OfflinePlayer p) {
 		if(instance.containsKey(p)) {
 			return instance.get(p);
 		}
@@ -133,5 +147,11 @@ public class Muter {
 		Muter m = new Muter(p);
 		instance.put(p, m);
 		return m;
+	}
+	
+	public static void save() {
+		for(Map.Entry<OfflinePlayer, Muter> m : instance.entrySet()) {
+			m.getValue().saveMutes();
+		}
 	}
 }
