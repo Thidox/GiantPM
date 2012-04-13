@@ -3,13 +3,13 @@ package nl.giantit.minecraft.GiantPM.core.Tools.Muter;
 import nl.giantit.minecraft.GiantPM.GiantPM;
 import nl.giantit.minecraft.GiantPM.core.Database.db;
 
-import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.Map;
+import nl.giantit.minecraft.GiantPM.Misc.Messages;
 
 /**
  *
@@ -102,8 +102,14 @@ public class Muter {
 	public String getMutesString() {
 		String s = "";
 		
+		int i = 0;
 		for(OfflinePlayer r : muted) {
-			s += r.getName() + ", ";
+			if(i > 0) {
+				s += GiantPM.getPlugin().getMsgHandler().getMsg(Messages.msgType.MAIN, "muteListCommaSeperator");
+			}
+			i++;
+			
+			s += r.getName();
 		}
 		
 		return s;
