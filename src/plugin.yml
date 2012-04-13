@@ -1,6 +1,6 @@
 name: GiantPM
 main: nl.giantit.minecraft.GiantPM.GiantPM
-version: 2.1
+version: 2.2
 commands:
     pm:
         desription: GiantPM
