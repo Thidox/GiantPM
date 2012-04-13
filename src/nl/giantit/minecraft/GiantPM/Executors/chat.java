@@ -28,7 +28,7 @@ public class chat {
 			help.help(player, args);
 		}else if(Misc.isEitherIgnoreCase(args[0], "mute", "m")) {
 			mute.mute(player, args);
-		}else if(Misc.isEitherIgnoreCase(args[0], "umute", "um")) {
+		}else if(Misc.isEitherIgnoreCase(args[0], "unmute", "um")) {
 			mute.unmute(player, args);
 		}else{
 			Heraut.say(player, "Ok, we have no friggin clue what you are on about, so how about we just send you our help page?");
