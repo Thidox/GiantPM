@@ -12,7 +12,9 @@ import nl.giantit.minecraft.GiantPM.Misc.Misc;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,22 +31,22 @@ public class PlayerListener implements Listener {
 	
 	private HashMap<String, Player> replier = new HashMap<String, Player>();
 	private HashMap<Player, String> cQue = new HashMap<Player, String>();
-	private HashMap<Player, HashMap<Player, String>> pnQue = new HashMap<Player, HashMap<Player, String>>();
+	private HashMap<Player, HashMap<OfflinePlayer, String>> pnQue = new HashMap<Player, HashMap<OfflinePlayer, String>>();
 	
 	public PlayerListener(GiantPM plugin) {
 		this.plugin = plugin;
 		this.mH = plugin.getMsgHandler();
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(PlayerChatEvent event) {
 		String message = event.getMessage();
 		Player p = event.getPlayer();
 		
 		String[] tmp = {};
 		String msg = "";
-		if(message.contains(": ")) {
-			tmp = message.split(": ");
+		if(message.contains(":")) {
+			tmp = message.split(":");
 
 			int i = 0;
 			for(String part : tmp) {
@@ -56,26 +58,29 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
+		if(msg.startsWith(" "))
+			msg = msg.replaceFirst(" ", "");
+		
 		if(Que.isInQue(p)) {
 			switch(Que.remFromQue(p)) {
 				case PARTIALNAME:
 					if(Misc.isAnyIgnoreCase(message, "yes", "yea", "yep", "da", "ja", "oui", "ye", "y", "si")) {
-						HashMap<Player, String> pn = pnQue.get(p);
-						for(Map.Entry<Player, String> entry : pn.entrySet()) {
+						HashMap<OfflinePlayer, String> pn = pnQue.get(p);
+						for(Map.Entry<OfflinePlayer, String> entry : pn.entrySet()) {
 							if(entry.getKey().isOnline()) {
 								HashMap<String, String> data = new HashMap<String, String>();
 								data.put("player", p.getDisplayName());
-								data.put("receiver", entry.getKey().getDisplayName());
+								data.put("receiver", entry.getKey().getName());
 								data.put("msg", entry.getValue());
 								
-								if(!Muter.getMuter(p).isMutedBy(entry.getKey())) {
-									Heraut.say(entry.getKey(), mH.getMsg(Messages.msgType.MAIN, "whispers", data));
+								if(!Muter.getMuter((OfflinePlayer)p).isMutedBy(entry.getKey())) {
+									Heraut.say(entry.getKey().getPlayer(), mH.getMsg(Messages.msgType.MAIN, "whispers", data));
 								}
 								
 								Heraut.say(p, plugin.getMsgHandler().getMsg(Messages.msgType.MAIN, "whisperTo", data));
 								Heraut.say(p, plugin.getMsgHandler().getMsg(Messages.msgType.MAIN, "whisperMsg", data));
-								Que.addToQue(entry.getKey(), QueType.REPLY);
-								Replier.addReply(entry.getKey(), p);
+								Que.addToQue(entry.getKey().getPlayer(), QueType.REPLY);
+								Replier.addReply(entry.getKey().getPlayer(), p);
 							}else{
 								//Mailer.send(p, entry.getKey(), entry.getValue());
 								Heraut.say(p, "We are sorry but ofline messages are currently not supported!");
@@ -113,90 +118,117 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
-		if(tmp.length > 0) {
-			Muter m = Muter.getMuter(p);
-			String[] users = new String[]{};
-			if(tmp[0].contains(", ")) {
-				users = tmp[0].split(", ");
-			}else{
-				users = new String[]{tmp[0]};
-			}
-
-			Boolean broken = false;
-			ArrayList<Player> rs = new ArrayList<Player>();
-
-			for(String user : users) {
-				if(user.contains(" ")) {
-					broken = true;
-					break;
-				}
-				
-				user = Heraut.clean(user);
-
-				Player r = plugin.getSrvr().getPlayer(user);
-				if(r == null)
-					continue;
-				
-				
-				if(!m.isMuted(r)) {
-					if(r.getName().equalsIgnoreCase(user)) {
-						rs.add(r);
-					}else{
-						HashMap<Player, String> t;
-						if(!pnQue.containsKey(p)) {
-							t = new HashMap<Player, String>();
-						}else{
-							t = pnQue.get(p);
-						}
-						
-						t.put(r, msg);
-						pnQue.put(p, t);
-						Que.addToQue(p, QueType.PARTIALNAME);
-						HashMap<String, String> data = new HashMap<String, String>();
-						data.put("player", r.getDisplayName());
-						data.put("partial", user);
-						
-						Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "partialNamePassed", data));
-					}
+		String cmd;
+		if(tmp.length > 0)
+			cmd = tmp[0];
+		else
+			cmd = tmp.toString();
+		
+		if(Commander.doCommand(p, cmd, msg)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if(!Channel.inChannel(p)) {
+			if(tmp.length > 0) {
+				Muter m = Muter.getMuter((OfflinePlayer)p);
+				String[] users = new String[]{};
+				if(tmp[0].contains(", ")) {
+					users = tmp[0].split(", ");
 				}else{
-					HashMap<String, String> data = new HashMap<String, String>();
-					data.put("player", r.getDisplayName());
-					
-					Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "playerMuted", data));
+					users = new String[]{tmp[0]};
 				}
-			}
-			
-			if(false == broken) {
-				if(rs.size() > 0) {
-					String receivers = "";
-					String cs = mH.getMsg(Messages.msgType.MAIN, "whisperToCommaSeperator");
-					for(Player r : rs) {
-						if(!m.isMutedBy(r)) {
-							HashMap<String, String> data = new HashMap<String, String>();
-							data.put("player", p.getDisplayName());
-							data.put("receiver", r.getDisplayName());
-							data.put("msg", msg);
 
-							Que.addToQue(r, QueType.REPLY);
-							Replier.addReply(r, p);
-							Heraut.say(r, mH.getMsg(Messages.msgType.MAIN, "whispers", data));
-						}
+				Boolean broken = false;
+				ArrayList<Player> rs = new ArrayList<Player>();
 
-						if(receivers.length() > 0) 
-							receivers += cs;
-						receivers += r.getDisplayName();
+				for(String user : users) {
+					if(user.contains(" ")) {
+						broken = true;
+						break;
 					}
 
-					HashMap<String, String> data = new HashMap<String, String>();
-					data.put("receiver", receivers);
-					data.put("msg", msg);
+					user = Heraut.clean(user);
 
-					Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "whisperTo", data));
-					Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "whisperMsg", data));
+					OfflinePlayer r = plugin.getSrvr().getPlayer(user);
+					
+					if(r == null)
+						r = plugin.getSrvr().getOfflinePlayer(user);
+					
+					if(r == null)
+						continue;
+
+
+					if(!m.isMuted(r)) {
+						if(r.getName().equalsIgnoreCase(user)) {
+							if(r.isOnline())
+								rs.add(r.getPlayer());
+							else{
+								Heraut.say(p, "We are sorry but ofline messages are currently not supported!");
+								event.setCancelled(true);
+							}
+						}else{
+							HashMap<OfflinePlayer, String> t;
+							if(!pnQue.containsKey(p)) {
+								t = new HashMap<OfflinePlayer, String>();
+							}else{
+								t = pnQue.get(p);
+							}
+
+							t.put(r, msg);
+							pnQue.put(p, t);
+							Que.addToQue(p, QueType.PARTIALNAME);
+							HashMap<String, String> data = new HashMap<String, String>();
+							data.put("player", r.getName());
+							data.put("partial", user);
+
+							Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "partialNamePassed", data));
+							event.setCancelled(true);
+						}
+					}else{
+						HashMap<String, String> data = new HashMap<String, String>();
+						data.put("player", r.getName());
+
+						Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "playerMuted", data));
+						event.setCancelled(true);
+					}
 				}
-				
-				event.setCancelled(true);
+
+				if(false == broken) {
+					if(rs.size() > 0) {
+						String receivers = "";
+						String cs = mH.getMsg(Messages.msgType.MAIN, "whisperToCommaSeperator");
+						for(Player r : rs) {
+							if(!m.isMutedBy((OfflinePlayer)r)) {
+								HashMap<String, String> data = new HashMap<String, String>();
+								data.put("player", p.getDisplayName());
+								data.put("receiver", r.getName());
+								data.put("msg", msg);
+
+								Que.addToQue(r, QueType.REPLY);
+								Replier.addReply(r, p);
+								Heraut.say(r, mH.getMsg(Messages.msgType.MAIN, "whispers", data));
+							}
+
+							if(receivers.length() > 0) 
+								receivers += cs;
+							receivers += r.getDisplayName();
+						}
+
+						HashMap<String, String> data = new HashMap<String, String>();
+						data.put("receiver", receivers);
+						data.put("msg", msg);
+
+						Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "whisperTo", data));
+						Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "whisperMsg", data));
+						event.setCancelled(true);
+					}
+				}
 			}
+		}else{
+			Channel c = Channel.getChannel(Channel.getPlayerChannelName(p));
+			c.sendMsg(p, msg);
+			event.setCancelled(true);
 		}
 	}
 }
