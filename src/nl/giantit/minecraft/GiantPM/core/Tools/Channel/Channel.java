@@ -64,9 +64,7 @@ public class Channel {
 	public void sendMsg(Player p, String msg) {
 		for(Player m : members) {
 			if(m.isOnline()) {
-				if(!m.getName().equals(p.getName())) {
-					Heraut.say(m, msg);
-				}
+				Heraut.say(m, p.getDisplayName() + ": " + msg);
 			}else{
 				leaveChannel(m);
 				
@@ -106,7 +104,7 @@ public class Channel {
 		return inChan.containsKey(p);
 	}
 	
-	public static String getPlayerChannel(Player p) {
+	public static String getPlayerChannelName(Player p) {
 		return inChan.get(p);
 	}
 	
