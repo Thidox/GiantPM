@@ -1,12 +1,13 @@
 GiantPM:
     global:
-        version: 0.1
+        version: 0.2
         name: GiantPM
         debug: false
         opHasPerms: true
+        perPage: 5
     db:
         driver: SQLite
-        database: GiantShop
+        database: GiantPM
         prefix: shop_
         host: localhost
         port: 3306

@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 main:
     whispers: C_BLUE%player C_YELLOWwhispers C_WHITE%msg
     whisperMsg: C_YELLOWmessage C_WHITE%msg
@@ -11,10 +11,19 @@ main:
     removedOfflinePlayer: C_YELLOWRemoved offline player C_BLUE%player C_YELLOWfrom the conversation!
     channelStateChanged: C_YELLOWYou have successfully changed the conversation state to C_BLUE%stateC_YELLOW!
     whisperToCommaSeperator: C_YELLOW, C_BLUE
+    mutedPlayerList: C_YELLOWMuted players C_BLUE%muted
+    muteListCommaSeperator: C_YELLOW, C_BLUE
+    helpCommand: C_RED%command C_YELLOW-C_WHITE %description
+    playerMuted: C_YELLOWYou have successfully muted player C_BLUE%playerC_YELLOW!
+    playerUnMuted: C_YELLOWYou have successfully unmuted player C_BLUE%playerC_YELLOW!
 admin:
     none: no messages!
 errors:
     noReplyTarget: C_REDWe are sorry but there seems to be noone you can reply to!
     channelIsPrivate: C_REDThe conversation you were trying to join is private!
+    noPlayersMuted: C_REDYou currently have no muted players!
     playerMuted: C_REDYou can not send a message to muted player C_BLUE%playerC_RED!
+    playerAlreadyMuted: C_REDYou can not mute already muted player C_BLUE%playerC_RED!
+    playerNotMuted: C_REDPlayer C_BLUE%playerC_RED is not muted!
+    playerUnfindable: C_REDWe are sorry but we are unable to find player C_BLUE%playerC_RED!
     partialNamePassed: C_REDYou passed a partial name! Please type "C_WHITEyesC_RED" to confirm that you ment C_BLUE%player C_REDwith C_BLUE%partialC_RED!
