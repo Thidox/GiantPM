@@ -1,8 +1,9 @@
 package nl.giantit.minecraft.GiantPM;
 
 import nl.giantit.minecraft.GiantPM.core.config;
-import nl.giantit.minecraft.GiantPM.core.perm;
 import nl.giantit.minecraft.GiantPM.core.Database.db;
+import nl.giantit.minecraft.GiantPM.core.perm;
+import nl.giantit.minecraft.GiantPM.core.Tools.Muter.Muter;
 import nl.giantit.minecraft.GiantPM.Executors.chat;
 import nl.giantit.minecraft.GiantPM.Listeners.*;
 import nl.giantit.minecraft.GiantPM.Misc.Messages;
@@ -91,6 +92,7 @@ public class GiantPM extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		Muter.save();
 		log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully disabled");
 	}
 	
