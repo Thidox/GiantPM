@@ -20,7 +20,7 @@ public class Muter {
 	private static HashMap<OfflinePlayer, Muter> instance = new HashMap<OfflinePlayer, Muter>();
 	
 	private OfflinePlayer p;
-	private ArrayList<OfflinePlayer> muted = new ArrayList<OfflinePlayer>();
+	private ArrayList<String> muted = new ArrayList<String>();
 	private boolean init = false;
 	
 	private void loadMutes() {
@@ -40,7 +40,7 @@ public class Muter {
 				for(String u : res.get("muted").split(";")) {
 					OfflinePlayer m = GiantPM.getPlugin().getSrvr().getOfflinePlayer(u);
 					if(m != null) {
-						muted.add(m);
+						muted.add(m.getName());
 					}else
 						GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + p.getName() + ":" + u + ")");
 				}
@@ -55,8 +55,8 @@ public class Muter {
 		db DB = db.Obtain();
 		
 		String m = "";
-		for(OfflinePlayer u : muted) {
-			m += u.getName() + ";";
+		for(String u : muted) {
+			m += u + ";";
 		}
 		
 		if(!init) {
@@ -103,13 +103,13 @@ public class Muter {
 		String s = "";
 		
 		int i = 0;
-		for(OfflinePlayer r : muted) {
+		for(String r : muted) {
 			if(i > 0) {
 				s += GiantPM.getPlugin().getMsgHandler().getMsg(Messages.msgType.MAIN, "muteListCommaSeperator");
 			}
 			i++;
 			
-			s += r.getName();
+			s += r;
 		}
 		
 		return s;
@@ -117,8 +117,8 @@ public class Muter {
 	
 	public MuterResp mute(OfflinePlayer m) {
 		if(m != null) {
-			if(!muted.contains(m)) {
-				muted.add(m);
+			if(!muted.contains(m.getName())) {
+				muted.add(m.getName());
 				return new MuterResp(MuterResp.MuterRespType.SUCCESS, "");
 			}else
 				return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is already muted!");
@@ -128,8 +128,8 @@ public class Muter {
 	
 	public MuterResp unmute(OfflinePlayer m) {
 		if(m != null) {
-			if(muted.contains(m)) {
-				muted.remove(m);
+			if(muted.contains(m.getName())) {
+				muted.remove(m.getName());
 				return new MuterResp(MuterResp.MuterRespType.SUCCESS, "");
 			}else
 				return new MuterResp(MuterResp.MuterRespType.FAIL, "Passed player is not muted!");
@@ -138,11 +138,11 @@ public class Muter {
 	}
 	
 	public boolean isMuted(OfflinePlayer m) {
-		return muted.contains(m);
+		return muted.contains(m.getName());
 	}
 	
 	public boolean isMutedBy(OfflinePlayer m) {
-		return Muter.getMuter(m).isMuted(m);
+		return Muter.getMuter(m).isMuted(p);
 	}
 	
 	public static Muter getMuter(OfflinePlayer p) {
