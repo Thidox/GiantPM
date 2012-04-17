@@ -38,11 +38,52 @@ public class Commander {
 
 			mute.unmute(p, args.toArray(new String[args.size()]));
 			return true;
-		}/*else if(cmd.equalsIgnoreCase("join")) {
-			
+		}else if(cmd.equalsIgnoreCase("inv")) {
+			if(arg.contains(" ")) {
+				args.addAll(Arrays.asList(arg.split(" ")));
+			}else if(!arg.equals("")) {
+				args.add(arg);
+			}
+
+			inv.inv(p, args.toArray(new String[args.size()]));
+			return true;
+		}else if(cmd.equalsIgnoreCase("join")) {
+			if(arg.contains(" ")) {
+				args.addAll(Arrays.asList(arg.split(" ")));
+			}else if(!arg.equals("")) {
+				args.add(arg);
+			}
+
+			join.join(p, args.toArray(new String[args.size()]));
+			return true;
 		}else if(cmd.equalsIgnoreCase("part")) {
-			
-		}else if(cmd.equalsIgnoreCase("mail")) {
+			if(arg.contains(" ")) {
+				args.addAll(Arrays.asList(arg.split(" ")));
+			}else if(!arg.equals("")) {
+				args.add(arg);
+			}
+
+			join.part(p, args.toArray(new String[args.size()]));
+			return true;
+		}else if(cmd.equalsIgnoreCase("state")) {
+			if(arg.contains(" ")) {
+				args.addAll(Arrays.asList(arg.split(" ")));
+			}else if(!arg.equals("")) {
+				args.add(arg);
+			}
+
+			channel.setStatus(p, args.toArray(new String[args.size()]));
+			return true;
+		}else if(cmd.equalsIgnoreCase("members")) {
+			if(arg.contains(" ")) {
+				args.addAll(Arrays.asList(arg.split(" ")));
+			}else if(!arg.equals("")) {
+				args.add(arg);
+			}
+
+			channel.getMembers(p, args.toArray(new String[args.size()]));
+			return true;
+		}/*else if(cmd.equalsIgnoreCase("mail")) {
 			
 		}*/
 		

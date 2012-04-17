@@ -30,6 +30,16 @@ public class chat {
 			mute.mute(player, args);
 		}else if(Misc.isEitherIgnoreCase(args[0], "unmute", "um")) {
 			mute.unmute(player, args);
+		}else if(Misc.isEitherIgnoreCase(args[0], "inv", "i")) {
+			inv.inv(player, args);
+		}else if(Misc.isEitherIgnoreCase(args[0], "join", "j")) {
+			join.join(player, args);
+		}else if(Misc.isEitherIgnoreCase(args[0], "part", "p")) {
+			join.part(player, args);
+		}else if(Misc.isEitherIgnoreCase(args[0], "state", "s")) {
+			channel.setStatus(player, args);
+		}else if(Misc.isEitherIgnoreCase(args[0], "members", "mem")) {
+			channel.getMembers(player, args);
 		}else{
 			Heraut.say(player, "Ok, we have no friggin clue what you are on about, so how about we just send you our help page?");
 			help.help(player, args);
