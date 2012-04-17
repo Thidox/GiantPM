@@ -34,7 +34,7 @@ public class GiantPM extends JavaPlugin {
 	private chat chat;
 	private Messages msgHandler;
 	private String name, dir, pubName;
-	private String bName = "Stuttering Beaver";
+	private String bName = "Whining Spider";
 	
 	public static final Logger log = Logger.getLogger("Minecraft");
 	
