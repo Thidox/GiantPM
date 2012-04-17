@@ -30,8 +30,8 @@ public class PlayerListener implements Listener {
 	private Messages mH;
 	
 	private HashMap<String, Player> replier = new HashMap<String, Player>();
-	private HashMap<Player, String> cQue = new HashMap<Player, String>();
 	private HashMap<Player, HashMap<OfflinePlayer, String>> pnQue = new HashMap<Player, HashMap<OfflinePlayer, String>>();
+	public static HashMap<String, String> cQue = new HashMap<String, String>();
 	
 	public PlayerListener(GiantPM plugin) {
 		this.plugin = plugin;
@@ -45,18 +45,25 @@ public class PlayerListener implements Listener {
 		
 		String[] tmp = {};
 		String msg = "";
+		Boolean skipPm = false;
 		if(message.contains(":")) {
-			tmp = message.split(":");
+			String m = message.replaceFirst(":", "-:-_-:-");
+			tmp = m.split("-:-_-:-");
 
 			int i = 0;
 			for(String part : tmp) {
-				i++;
-				if(i == 1)
+				if(i == 0) {
+					if(tmp[0].isEmpty())
+						skipPm = true;
+					
+					i++;
 					continue;
+				}
 
 				msg += part;
 			}
-		}
+		}else
+			msg = message;
 		
 		if(msg.startsWith(" "))
 			msg = msg.replaceFirst(" ", "");
@@ -83,7 +90,7 @@ public class PlayerListener implements Listener {
 								Replier.addReply(entry.getKey().getPlayer(), p);
 							}else{
 								//Mailer.send(p, entry.getKey(), entry.getValue());
-								Heraut.say(p, "We are sorry but ofline messages are currently not supported!");
+								Heraut.say(p, "We are sorry but offline messages are currently not supported!");
 							}
 						}
 						event.setCancelled(true);
@@ -92,8 +99,8 @@ public class PlayerListener implements Listener {
 					break;
 				case JOINCHANNEL:
 					if(Misc.isAnyIgnoreCase(message, "yes", "yea", "yep", "da", "ja", "oui", "ye", "y", "si")) {
-						Channel c = Channel.getChannel(cQue.get(p));
-						ChannelResponse cR = c.joinChannel(p, true);
+						Channel c = Channel.getChannel(cQue.get(p.getName()));
+						ChannelResponse cR = c.joinChannel(p);
 						switch(cR) {
 							case CHANNELISPRIVATE:
 								Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "channelIsPrivate"));
@@ -129,7 +136,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if(!Channel.inChannel(p)) {
+		if(!skipPm) {
 			if(tmp.length > 0) {
 				Muter m = Muter.getMuter((OfflinePlayer)p);
 				String[] users = new String[]{};
@@ -139,7 +146,7 @@ public class PlayerListener implements Listener {
 					users = new String[]{tmp[0]};
 				}
 
-				Boolean broken = false;
+				Boolean broken = false, partial = false;
 				ArrayList<Player> rs = new ArrayList<Player>();
 
 				for(String user : users) {
@@ -151,20 +158,25 @@ public class PlayerListener implements Listener {
 					user = Heraut.clean(user);
 
 					OfflinePlayer r = plugin.getSrvr().getPlayer(user);
-					
+
 					if(r == null)
-						r = plugin.getSrvr().getOfflinePlayer(user);
-					
+						r = Misc.getPlayer(user);
+
 					if(r == null)
 						continue;
 
+					if(!r.isOnline() && r.getFirstPlayed() <= 0) {
+						Heraut.say(p, "We are sorry but for offline messages you need a full name!");
+						event.setCancelled(true);
+						return;
+					}
 
 					if(!m.isMuted(r)) {
 						if(r.getName().equalsIgnoreCase(user)) {
 							if(r.isOnline())
 								rs.add(r.getPlayer());
 							else{
-								Heraut.say(p, "We are sorry but ofline messages are currently not supported!");
+								Heraut.say(p, "We are sorry but offline messages are currently not supported!");
 								event.setCancelled(true);
 							}
 						}else{
@@ -184,6 +196,7 @@ public class PlayerListener implements Listener {
 
 							Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "partialNamePassed", data));
 							event.setCancelled(true);
+							partial = true;
 						}
 					}else{
 						HashMap<String, String> data = new HashMap<String, String>();
@@ -223,11 +236,17 @@ public class PlayerListener implements Listener {
 						Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "whisperMsg", data));
 						event.setCancelled(true);
 					}
+
+					if(partial == true || rs.size() > 0) {
+						return;
+					}
 				}
 			}
-		}else{
+		}
+		
+		if(!event.isCancelled() && Channel.inChannel(p)) {
 			Channel c = Channel.getChannel(Channel.getPlayerChannelName(p));
-			c.sendMsg(p, msg);
+			c.sendMsg(p, message);
 			event.setCancelled(true);
 		}
 	}
