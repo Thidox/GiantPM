@@ -4,6 +4,7 @@ import nl.giantit.minecraft.GiantPM.GiantPM;
 import nl.giantit.minecraft.GiantPM.core.Tools.Muter.*;
 import nl.giantit.minecraft.GiantPM.Misc.Heraut;
 import nl.giantit.minecraft.GiantPM.Misc.Messages;
+import nl.giantit.minecraft.GiantPM.Misc.Misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
@@ -38,7 +39,7 @@ public class mute {
 				OfflinePlayer r = GiantPM.getPlugin().getSrvr().getPlayer(arg);
 				
 				if(r == null)
-					r = GiantPM.getPlugin().getSrvr().getOfflinePlayer(arg);
+					r = Misc.getPlayer(arg);
 				
 				if(r == null) {
 					HashMap<String, String> data = new HashMap<String, String>();
@@ -75,7 +76,7 @@ public class mute {
 				OfflinePlayer r = GiantPM.getPlugin().getSrvr().getPlayer(arg);
 				
 				if(r == null)
-					r = GiantPM.getPlugin().getSrvr().getOfflinePlayer(arg);
+					r = Misc.getPlayer(arg);
 				
 				if(r == null) {
 					HashMap<String, String> data = new HashMap<String, String>();
