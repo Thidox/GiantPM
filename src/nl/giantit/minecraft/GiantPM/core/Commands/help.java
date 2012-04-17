@@ -28,16 +28,18 @@ public class help {
 		entries.add(new String[] {"[player](, [player]): [message]", "Send a private message to given player", "null"});
 		entries.add(new String[] {"/pm mute|m", "Show your muted players list", "null"});
 		entries.add(new String[] {"mute: ", "Join the conversation the given player is in", "null"});
-		entries.add(new String[] {"/pm mute|m [player]", "Mute given player", "null"});
-		entries.add(new String[] {"mute: [player]", "Join the conversation the given player is in", "null"});
-		entries.add(new String[] {"/pm unmute|um [player]", "Unmute given player", "null"});
-		entries.add(new String[] {"unmute|um: [player]", "Join the conversation the given player is in", "null"});
+		entries.add(new String[] {"/pm mute|m [player]( [player])", "Mute given player", "null"});
+		entries.add(new String[] {"mute: [player]( [player])", "Join the conversation the given player is in", "null"});
+		entries.add(new String[] {"/pm unmute|um [player]( [player])", "Unmute given player", "null"});
+		entries.add(new String[] {"unmute|um: [player]( [player])", "Unmute given player", "null"});
 		entries.add(new String[] {"/pm join|j [player]", "Join the conversation the given player is in", "null"});
 		entries.add(new String[] {"join: [player]", "Join the conversation the given player is in", "null"});
 		entries.add(new String[] {"/pm part|p", "Leave the conversation that you are currently in", "null"});
 		entries.add(new String[] {"part: ", "Leave the conversation that you are currently in", "null"});
 		entries.add(new String[] {"/pm inv|i [player]( [player])", "Invite given player to conversation", "null"});
-		entries.add(new String[] {"inv: [player](, [player])", "Invite given player to conversation", "null"});
+		entries.add(new String[] {"inv: [player]( [player])", "Invite given player to conversation", "null"});
+		entries.add(new String[] {"/pm state|s [state]", "Set the privacy settings of the conversation", "null"});
+		entries.add(new String[] {"state: [state]", "Set the privacy settings of the conversation", "null"});
 	}
 	
 	public static void help(Player player, String[] args) {
