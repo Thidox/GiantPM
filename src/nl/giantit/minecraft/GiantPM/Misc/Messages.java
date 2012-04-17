@@ -18,7 +18,7 @@ public class Messages {
 	
 	private GiantPM plugin;
 	private YamlConfiguration config;
-	private double yamlVersion = 0.2;
+	private double yamlVersion = 0.3;
 	private HashMap<String, String> mainMsgs, adminMsgs, errorMsgs;
 	
 	public enum msgType {
@@ -168,7 +168,8 @@ public class Messages {
 					GiantPM.log.log(Level.SEVERE, "[" + plugin.getName() + "] Message template engine received invalid parameter! (null)");
 				}
 			}
-			Template = Template.replace("&n", plugin.getPubName());
+			Template = Template.replace("%n", plugin.getPubName());
+			Template = Template.replace("%colon", ":");
 			
 			Template = this.colourfy(Template);
 			return Template;
@@ -210,7 +211,8 @@ public class Messages {
 					GiantPM.log.log(Level.SEVERE, "[" + plugin.getName() + "] Message template engine received invalid parameter! (null)");
 				}
 			}
-			Template = Template.replace("&n", plugin.getPubName());
+			Template = Template.replace("%n", plugin.getPubName());
+			Template = Template.replace("%colon", ":");
 			
 			Template = this.deColourfy(Template);
 			return Template;
