@@ -6,6 +6,7 @@ import nl.giantit.minecraft.giantpm.core.perm;
 import nl.giantit.minecraft.giantpm.core.Tools.Muter.Muter;
 import nl.giantit.minecraft.giantpm.Executors.chat;
 import nl.giantit.minecraft.giantpm.Listeners.*;
+import nl.giantit.minecraft.giantpm.core.Updater.Updater;
 import nl.giantit.minecraft.giantpm.Misc.Messages;
 
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import org.bukkit.command.CommandSender;
 public class GiantPM extends JavaPlugin {
 	
 	private static GiantPM plugin;
+	private Updater updater;
 	private static Server Server;
 	private db database;
 	private perm perms;
@@ -64,6 +66,7 @@ public class GiantPM extends JavaPlugin {
 		
 		config conf = config.Obtain();
 		try {
+			this.updater = new Updater(this);
 			conf.loadConfig(configFile);
 			this.database = new db(this);
 			
@@ -143,8 +146,8 @@ public class GiantPM extends JavaPlugin {
 		return this.msgHandler;
 	}
 	
-	public static GiantPM getPlugin() {
-		return GiantPM.plugin;
+	public Updater getUpdater() {
+		return this.updater;
 	}
 	
 	public void extract(String file) {
