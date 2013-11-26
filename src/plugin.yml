@@ -1,6 +1,6 @@
-name: GiantPM
-main: nl.giantit.minecraft.GiantPM.GiantPM
-version: 2.4.DEV
+name: $name
+main: nl.giantit.minecraft.$name.$name
+version: $version-$build
 commands:
     pm:
         desription: GiantPM

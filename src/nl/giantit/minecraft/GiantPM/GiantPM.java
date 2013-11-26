@@ -67,8 +67,8 @@ public class GiantPM extends JavaPlugin {
 			conf.loadConfig(configFile);
 			this.database = new db(this);
 			
-			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 			if(conf.getBoolean("GiantPM.permissions.usePermissions") == true) {
+				getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 				if(conf.getString("GiantPM.permissions.permissionEngine").equals("sperm")) {
 					setPermMan(new perm());
 				}
@@ -79,6 +79,7 @@ public class GiantPM extends JavaPlugin {
 			msgHandler = new Messages(this);
 			
 			getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 			
 			log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
 		}catch(Exception e) {

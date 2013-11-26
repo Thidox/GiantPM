@@ -13,7 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
@@ -38,11 +39,15 @@ public class PlayerListener implements Listener {
 		this.mH = plugin.getMsgHandler();
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(PlayerChatEvent event) {
+	@EventHandler
+	public void onPlayerJoin(final PlayerJoinEvent event) {
+		
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		String message = event.getMessage();
 		Player p = event.getPlayer();
-		
 		String[] tmp = {};
 		String msg = "";
 		Boolean skipPm = false;

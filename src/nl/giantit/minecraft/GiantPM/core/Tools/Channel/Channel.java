@@ -25,15 +25,37 @@ public class Channel {
 	private ArrayList<String> invited = new ArrayList<String>();
 	private int status = 1; //0 == open; 1 == private - inv allowed; 2 == private;
 	private String name;
+	private String owner;
 	private perm perms = perm.Obtain();
 	
 	
+	private void nextOwner() {
+		for(Map.Entry<String, Player> m : members.entrySet()) {
+			if(m.getValue().isOnline()) {
+				String p = m.getKey();
+				if(!this.owner.equalsIgnoreCase(p)) {
+					this.owner = p;
+					Heraut.say(m.getValue(), mH.getMsg(Messages.msgType.MAIN, "channelOwner"));
+					break;
+				}
+			}else{
+				leaveChannel(m.getValue(), true);
+				
+				HashMap<String, String> data = new HashMap<String, String>();
+				data.put("player", m.getValue().getDisplayName());
+				
+				sendMsg(mH.getMsg(Messages.msgType.MAIN, "removedOfflinePlayer", data));
+			}
+		}
+	}
+	
 	private Channel(String name) {
 		this.name = name;
+		this.owner = name;
 	}
 	
 	public boolean isOwner(Player p) {
-		return this.name.equalsIgnoreCase(p.getName());
+		return this.owner.equalsIgnoreCase(p.getName());
 	}
 	
 	public void setStatus(String state) {
@@ -44,9 +66,9 @@ public class Channel {
 			HashMap<String, String> data = new HashMap<String, String>();
 			data.put("state", (tmp <= 0) ? "Public" : ((tmp >= 2) ? "Private" : "Private invitations allowed"));
 			
-			Heraut.say(members.get(name), mH.getMsg(Messages.msgType.MAIN, "channelStateChanged", data));
+			Heraut.say(members.get(owner), mH.getMsg(Messages.msgType.MAIN, "channelStateChanged", data));
 		}catch(NumberFormatException e) {
-			Heraut.say(members.get(name), mH.getMsg(Messages.msgType.ERROR, "channelStateInvalid"));
+			Heraut.say(members.get(owner), mH.getMsg(Messages.msgType.ERROR, "channelStateInvalid"));
 		}
 	}
 	
@@ -114,17 +136,13 @@ public class Channel {
 	}
 	
 	public void leaveChannel(Player p) {
-		inChan.remove(p.getName());
-		members.remove(p.getName());
-		
-		HashMap<String, String> data = new HashMap<String, String>();
-		data.put("player", p.getDisplayName());
-		
-		sendMsg(mH.getMsg(Messages.msgType.MAIN, "leftChannel", data));
-		Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "channelLeft"));
+		this.leaveChannel(p, false);
 	}
 	
 	public void leaveChannel(Player p, boolean quiet) {
+		if(this.isOwner(p))
+			this.nextOwner();
+		
 		inChan.remove(p.getName());
 		members.remove(p.getName());
 		
@@ -144,6 +162,10 @@ public class Channel {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public String getOwner() {
+		return this.owner;
 	}
 	
 	public String getMembersString() {
