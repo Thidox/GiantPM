@@ -1,44 +1,44 @@
 package nl.giantit.minecraft.giantpm;
 
-import nl.giantit.minecraft.giantpm.core.config;
-import nl.giantit.minecraft.giantpm.core.Database.db;
-import nl.giantit.minecraft.giantpm.core.perm;
+import nl.giantit.minecraft.giantcore.database.Database;
+import nl.giantit.minecraft.giantcore.GiantCore;
+import nl.giantit.minecraft.giantcore.GiantPlugin;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.core.Eco.Eco;
+import nl.giantit.minecraft.giantcore.perms.PermHandler;
+
+import nl.giantit.minecraft.giantpm.core.Config;
 import nl.giantit.minecraft.giantpm.core.Tools.Muter.Muter;
 import nl.giantit.minecraft.giantpm.Executors.chat;
 import nl.giantit.minecraft.giantpm.Listeners.*;
 import nl.giantit.minecraft.giantpm.core.Updater.Updater;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
-import org.bukkit.Server;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Giant
  */
-public class GiantPM extends JavaPlugin {
+public class GiantPM extends GiantPlugin {
 	
 	private static GiantPM plugin;
 	private Updater updater;
-	private static Server Server;
-	private db database;
-	private perm perms;
+	
+	private GiantCore gc;
+	
+	private Database db;
+	private PermHandler permHandler;
 	private chat chat;
 	private Messages msgHandler;
 	private String name, dir, pubName;
 	private String bName = "Whining Spider";
-	
-	public static final Logger log = Logger.getLogger("Minecraft");
 	
 	private void setPlugin() {
 		GiantPM.plugin = this;
@@ -50,7 +50,18 @@ public class GiantPM extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		Server = this.getServer();
+		this.gc = GiantCore.getInstance();
+		if(this.gc == null) {
+			getLogger().severe("Failed to hook into required GiantCore!");
+			this.getPluginLoader().disablePlugin(this);
+			return;
+		}
+		
+		if(this.gc.getProtocolVersion() < 0.3) {
+			getLogger().severe("The GiantCore version you are using it not made for this plugin!");
+			this.getPluginLoader().disablePlugin(this);
+			return;
+		}
 		
 		this.name = getDescription().getName();
 		this.dir = getDataFolder().toString();
@@ -61,43 +72,57 @@ public class GiantPM extends JavaPlugin {
 			getDataFolder().setWritable(true);
 			getDataFolder().setExecutable(true);
 			
-			extractDefaultFile("conf.yml");
+			this.extract("conf.yml");
+			if(!configFile.exists()) {
+				getLogger().severe("Failed to extract configuration file!");
+				this.getPluginLoader().disablePlugin(this);
+				return;
+			}
 		}
 		
-		config conf = config.Obtain();
+		Config conf = Config.Obtain(this);
 		try {
 			this.updater = new Updater(this);
 			conf.loadConfig(configFile);
-			this.database = new db(this);
+			if(!conf.isLoaded()) {
+				getLogger().severe("Failed to load configuration file!");
+				this.getPluginLoader().disablePlugin(this);
+				return;
+			}
 			
-			if(conf.getBoolean("GiantPM.permissions.usePermissions") == true) {
-				getServer().getPluginManager().registerEvents(new PluginListener(this), this);
-				if(conf.getString("GiantPM.permissions.permissionEngine").equals("sperm")) {
-					setPermMan(new perm());
-				}
+			HashMap<String, String> dbConf = conf.getMap(this.name + ".db.mc");
+			dbConf.put("debug", conf.getString(this.name + ".global.debug"));
+			
+			this.db = this.gc.getDB(this, null, dbConf);
+			
+			if(conf.getBoolean(this.name + ".permissions.usePermissions")) {
+				permHandler = this.gc.getPermHandler(PermHandler.findEngine(conf.getString(this.name + ".permissions.Engine")), conf.getBoolean(this.name + ".permissions.opHasPerms"));
+			}else{
+				permHandler = this.gc.getPermHandler(PermHandler.findEngine("NOPERM"), true);
 			}
 			
 			pubName = conf.getString("GiantPM.global.name");
 			chat = new chat(this);
-			msgHandler = new Messages(this);
+			msgHandler = new Messages(this, 0.3);
 			
 			getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 			
-			log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
+			getLogger().log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
 		}catch(Exception e) {
-			log.log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
+			getLogger().log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
 			if(conf.getBoolean("GiantPM.global.debug")) {
-				log.log(Level.INFO, "" + e);
+				getLogger().log(Level.INFO, "" + e);
 			}
-			Server.getPluginManager().disablePlugin(this);
+			this.getServer().getPluginManager().disablePlugin(this);
 		}
 	}
 	
 	@Override
 	public void onDisable() {
 		Muter.save();
-		log.log(Level.INFO, "[" + name + "](" + bName + ") was succesfully disabled");
+		this.db.getEngine().close();
+		getLogger().log(Level.INFO, "[" + name + "](" + bName + ") was succesfully disabled");
 	}
 	
 	@Override
@@ -114,34 +139,37 @@ public class GiantPM extends JavaPlugin {
 		return false;
 	}
 	
+	@Override
+	public GiantCore getGiantCore() {
+		return this.gc;
+	}
+	
+	@Override
 	public String getPubName() {
 		return this.pubName;
 	}
 	
+	@Override
 	public String getDir() {
 		return this.dir;
 	}
 	
-	public String getSeparator() {
-		return File.separator;
+	@Override
+	public Database getDB() {
+		return this.db;
 	}
 	
-	public db getDB() {
-		return this.database;
+	@Override
+	public PermHandler getPermHandler() {
+		return this.permHandler;
 	}
 	
-	public perm getPermMan() {
-		return this.perms;
+	@Override
+	public Eco getEcoHandler() {
+		return null;
 	}
 	
-	public void setPermMan(perm perm) {
-		this.perms = perm;
-	}
-	
-	public Server getSrvr() {
-		return getServer();
-	}
-	
+	@Override
 	public Messages getMsgHandler() {
 		return this.msgHandler;
 	}
@@ -150,50 +178,7 @@ public class GiantPM extends JavaPlugin {
 		return this.updater;
 	}
 	
-	public void extract(String file) {
-		extractDefaultFile(file);
-	}
-	
-	private void extractDefaultFile(String file) {
-		File configFile = new File(getDataFolder(), file);
-		if (!configFile.exists()) {
-			InputStream input = this.getClass().getResourceAsStream("/nl/giantit/minecraft/" + name + "/core/Default/" + file);
-			if (input != null) {
-				FileOutputStream output = null;
-
-				try {
-					output = new FileOutputStream(configFile);
-					byte[] buf = new byte[8192];
-					int length = 0;
-
-					while ((length = input.read(buf)) > 0) {
-						output.write(buf, 0, length);
-					}
-
-					log.log(Level.INFO, "[" + name + "] copied default file: " + file);
-				} catch (Exception e) {
-					Server.getPluginManager().disablePlugin(this);
-					log.log(Level.SEVERE, "[" + name + "] AAAAAAH!!! Can't extract the requested file!!", e);
-					return;
-				} finally {
-					try {
-						if (input != null) {
-							input.close();
-						}
-					} catch (Exception e) {
-						Server.getPluginManager().disablePlugin(this);
-						log.log(Level.SEVERE, "[" + name + "] AAAAAAH!!! Severe error!!", e);	
-					}
-					try {
-						if (output != null) {
-							output.close();
-						}
-					} catch (Exception e) {
-						Server.getPluginManager().disablePlugin(this);
-						log.log(Level.SEVERE, "[" + name + "] AAAAAAH!!! Severe error!!", e);
-					}
-				}
-			}
-		}
+	public static GiantPM getPlugin() {
+		return GiantPM.plugin;
 	}
 }

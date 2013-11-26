@@ -1,9 +1,6 @@
 package nl.giantit.minecraft.giantpm.Listeners;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
-import nl.giantit.minecraft.giantpm.core.config;
-import nl.giantit.minecraft.giantpm.core.perm;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
 import nl.giantit.minecraft.giantpm.Misc.Messages;
 
 import org.bukkit.event.EventHandler;

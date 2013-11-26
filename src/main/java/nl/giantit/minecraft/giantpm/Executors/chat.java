@@ -1,9 +1,10 @@
 package nl.giantit.minecraft.giantpm.Executors;
 
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
+
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Commands.*;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ import org.bukkit.entity.Player;
  */
 public class chat {
 	
-	private GiantPM plugin;
+	private final GiantPM plugin;
 	
 	public chat(GiantPM plugin) {
 		this.plugin = plugin;

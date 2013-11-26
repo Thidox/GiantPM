@@ -3,7 +3,7 @@ package nl.giantit.minecraft.giantpm.core.Commands;
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.Misc.Heraut;
 import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.core.config;
+import nl.giantit.minecraft.giantpm.core.Config;
 import nl.giantit.minecraft.giantpm.core.perm;
 
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class help {
 	
 	private static ArrayList<String[]> entries = new ArrayList<String[]>();
-	private static config conf = config.Obtain();
+	private static Config conf = Config.Obtain();
 	private static perm perms = perm.Obtain();
 	
 	private static void init() {

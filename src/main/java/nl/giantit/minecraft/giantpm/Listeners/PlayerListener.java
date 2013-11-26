@@ -1,13 +1,14 @@
 package nl.giantit.minecraft.giantpm.Listeners;
 
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
+
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Tools.*;
 import nl.giantit.minecraft.giantpm.core.Tools.Channel.*;
 import nl.giantit.minecraft.giantpm.core.Tools.Muter.*;
 import nl.giantit.minecraft.giantpm.core.Tools.Que.*;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -162,7 +163,7 @@ public class PlayerListener implements Listener {
 
 					user = Heraut.clean(user);
 
-					OfflinePlayer r = plugin.getSrvr().getPlayer(user);
+					OfflinePlayer r = plugin.getServer().getPlayer(user);
 
 					if(r == null)
 						r = Misc.getPlayer(user);
