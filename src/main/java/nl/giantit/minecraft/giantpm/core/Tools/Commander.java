@@ -1,6 +1,6 @@
 package nl.giantit.minecraft.giantpm.core.Tools;
 
-import nl.giantit.minecraft.giantpm.Misc.Misc;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
 import nl.giantit.minecraft.giantpm.core.Commands.*;
 
 import org.bukkit.entity.Player;

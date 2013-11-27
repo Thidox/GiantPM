@@ -2,8 +2,8 @@ package nl.giantit.minecraft.giantpm.core.Tools;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Tools.Que.*;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
 
 import org.bukkit.entity.Player;
 

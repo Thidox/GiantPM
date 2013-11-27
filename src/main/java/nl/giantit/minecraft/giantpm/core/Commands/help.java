@@ -1,15 +1,17 @@
 package nl.giantit.minecraft.giantpm.core.Commands;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
 import nl.giantit.minecraft.giantpm.core.Config;
-import nl.giantit.minecraft.giantpm.core.perm;
 
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import nl.giantit.minecraft.giantcore.perms.Permission;
+
+
 
 /**
  *
@@ -18,9 +20,9 @@ import java.util.HashMap;
 public class help {
 	
 	private static ArrayList<String[]> entries = new ArrayList<String[]>();
-	private static Config conf = Config.Obtain();
-	private static perm perms = perm.Obtain();
-	
+	private final static Config conf = Config.Obtain();
+        private final static Permission perm = GiantPM.getPlugin().getPermHandler().getEngine();
+        
 	private static void init() {
 		entries = new ArrayList<String[]>();
 		entries.add(new String[] {"/pm", "Show GiantPM help page 1", "null"});
@@ -52,10 +54,8 @@ public class help {
 
 			String permission = data[2];
 
-			if(permission.equalsIgnoreCase("null") || perms.has(player, permission)) {
+			if(permission.equalsIgnoreCase("null") || perm.has(player, permission)) {
 				uEntries.add(data);				
-			}else{
-				continue;
 			}
 		}
 		
@@ -67,7 +67,7 @@ public class help {
 		if(args.length >= 2) {
 			try{
 				curPag = Integer.parseInt(args[1]);
-			}catch(Exception e) {
+			}catch(NumberFormatException e) {
 				curPag = 1;
 			}
 		}else

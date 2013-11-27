@@ -1,7 +1,8 @@
 package nl.giantit.minecraft.giantpm.core.Tools.Muter;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
-import nl.giantit.minecraft.giantpm.core.Database.db;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.database.Driver;
 
 import org.bukkit.OfflinePlayer;
 
@@ -9,7 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.Map;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
+import nl.giantit.minecraft.giantcore.database.QueryResult;
+import nl.giantit.minecraft.giantcore.database.QueryResult.QueryRow;
+import nl.giantit.minecraft.giantcore.database.query.Group;
+import nl.giantit.minecraft.giantcore.database.query.InsertQuery;
+import nl.giantit.minecraft.giantcore.database.query.SelectQuery;
+import nl.giantit.minecraft.giantcore.database.query.UpdateQuery;
 
 /**
  *
@@ -24,7 +30,7 @@ public class Muter {
 	private boolean init = false;
 	
 	private void loadMutes() {
-		db DB = db.Obtain();
+                Driver DB = GiantPM.getPlugin().getDB().getEngine();
 		
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("muted");
@@ -32,17 +38,21 @@ public class Muter {
 		HashMap<String, String> where = new HashMap<String, String>();
 		where.put("owner", p.getName());
 		
-		ArrayList<HashMap<String, String>> mResSet = DB.select(fields).from("#__muted").where(where).execQuery();
+                SelectQuery mResQry = DB.select(fields);
+                mResQry.from("#__muted");
+                mResQry.where("owner", p.getName(), Group.ValueType.EQUALSRAW);
+                
+                QueryResult mResSet = mResQry.exec();
 		
 		if(mResSet.size() > 0) {
-			HashMap<String, String> res = mResSet.get(0);
-			if(res.get("muted").contains(";")) {
-				for(String u : res.get("muted").split(";")) {
-					OfflinePlayer m = GiantPM.getPlugin().getSrvr().getOfflinePlayer(u);
+			QueryRow res = mResSet.getRow(0);
+			if(res.getString("muted").contains(";")) {
+				for(String u : res.getString("muted").split(";")) {
+					OfflinePlayer m = GiantPM.getPlugin().getServer().getOfflinePlayer(u);
 					if(m != null) {
 						muted.add(m.getName());
 					}else
-						GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! (" + p.getName() + ":" + u + ")");
+						GiantPM.getPlugin().getLogger().log(Level.WARNING, "Invalid muted player passed! ({0}:{1})", new Object[]{p.getName(), u});
 				}
 			}
 		}else{
@@ -52,7 +62,7 @@ public class Muter {
 	
 	
 	private void saveMutes() {
-		db DB = db.Obtain();
+		Driver DB = GiantPM.getPlugin().getDB().getEngine();
 		
 		String m = "";
 		for(String u : muted) {
@@ -60,22 +70,22 @@ public class Muter {
 		}
 		
 		if(!init) {
-			HashMap<String, String> tmp = new HashMap<String, String>();
-			tmp.put("muted", m);
-			
-			HashMap<String, String> where = new HashMap<String, String>();
-			where.put("owner", p.getName());
-
-			DB.update("#__muted").set(tmp).where(where).updateQuery();
+                        UpdateQuery sMuteUpdateQry = DB.update("#__muted");
+                        sMuteUpdateQry.set("muted", m);
+                        sMuteUpdateQry.where("owner", p.getName());
+                        sMuteUpdateQry.exec(); 
 		}else{
 			ArrayList<String> fields = new ArrayList<String>();
 			fields.add("owner");
 			fields.add("muted");
 			
+                        /*
+                        
+                        // Assuming this is NOT needed!
+                        
 			ArrayList<HashMap<Integer, HashMap<String, String>>> values = new ArrayList<HashMap<Integer, HashMap<String, String>>>();
 			HashMap<Integer, HashMap<String, String>> tmp = new HashMap<Integer, HashMap<String, String>>();
-			
-			int i = 0;
+                        int i = 0;
 			for(String field : fields) {
 				HashMap<String, String> temp = new HashMap<String, String>();
 				if(field.equalsIgnoreCase("owner")) {
@@ -89,8 +99,14 @@ public class Muter {
 				i++;
 			}
 			values.add(tmp);
-
-			DB.insert("#__muted", fields, values).updateQuery();
+                        */
+                        
+                        InsertQuery sMuteInsertQry = DB.insert("#__muted");
+                        sMuteInsertQry.addFields(fields);
+                        sMuteInsertQry.addRow();
+                        sMuteInsertQry.assignValue("owner", p.getName());
+                        sMuteInsertQry.assignValue("muted", m);
+                        sMuteInsertQry.exec();
 		}
 	}
 	

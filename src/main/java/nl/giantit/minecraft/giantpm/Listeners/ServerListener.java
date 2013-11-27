@@ -1,7 +1,7 @@
 package nl.giantit.minecraft.giantpm.Listeners;
 
+import nl.giantit.minecraft.giantcore.Misc.Messages;
 import nl.giantit.minecraft.giantpm.GiantPM;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,9 +1,9 @@
 package nl.giantit.minecraft.giantpm.core.Tools.Channel;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
-import nl.giantit.minecraft.giantpm.core.perm;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.perms.Permission;
 
 import org.bukkit.entity.Player;
 
@@ -11,22 +11,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  *
  * @author Giant
  */
 public class Channel {
 	
-	private static HashMap<String, String> inChan = new HashMap<String, String>();
-	private static HashMap<String, Channel> channels = new HashMap<String, Channel>();
-	private Messages mH = GiantPM.getPlugin().getMsgHandler();
+	private final static HashMap<String, String> inChan = new HashMap<String, String>();
+	private final static HashMap<String, Channel> channels = new HashMap<String, Channel>();
+	private final Messages mH = GiantPM.getPlugin().getMsgHandler();
 	
 	private HashMap<String, Player> members = new HashMap<String, Player>();
 	private ArrayList<String> invited = new ArrayList<String>();
 	private int status = 1; //0 == open; 1 == private - inv allowed; 2 == private;
 	private String name;
 	private String owner;
-	private perm perms = perm.Obtain();
+	private Permission perms = GiantPM.getPlugin().getPermHandler().getEngine();
 	
 	
 	private void nextOwner() {

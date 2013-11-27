@@ -2,13 +2,14 @@ package nl.giantit.minecraft.giantpm.core.Commands;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Tools.Channel.Channel;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
 
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+
 
 /**
  *

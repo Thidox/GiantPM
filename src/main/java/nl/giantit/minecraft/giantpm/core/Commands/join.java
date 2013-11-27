@@ -3,9 +3,9 @@ package nl.giantit.minecraft.giantpm.core.Commands;
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Tools.Muter.Muter;
 import nl.giantit.minecraft.giantpm.core.Tools.Channel.*;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
@@ -30,7 +30,7 @@ public class join {
 				break;
 			}
 			
-			Player r = GiantPM.getPlugin().getSrvr().getPlayer(name);
+			Player r = GiantPM.getPlugin().getServer().getPlayer(name);
 			if(r == null) {
 				HashMap<String, String> data = new HashMap<String, String>();
 				data.put("player", name);
@@ -50,21 +50,18 @@ public class join {
 							return;
 						case CHANNELJOINED:
 							Heraut.say(p, mH.getMsg(Messages.msgType.MAIN, "channelJoined"));
-							return;
 					}
 				}else{
 					HashMap<String, String> data = new HashMap<String, String>();
 					data.put("player", name);
 
 					Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "playerNotInChannel", data));
-					return;
 				}
 			}else{
 				HashMap<String, String> data = new HashMap<String, String>();
 				data.put("player", name);
 
 				Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "joiningMutedPlayer", data));
-				return;
 			}
 		}else{
 			HashMap<String, String> data = new HashMap<String, String>();

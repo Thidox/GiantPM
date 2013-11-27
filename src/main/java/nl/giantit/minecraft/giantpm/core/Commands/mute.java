@@ -2,9 +2,9 @@ package nl.giantit.minecraft.giantpm.core.Commands;
 
 import nl.giantit.minecraft.giantpm.GiantPM;
 import nl.giantit.minecraft.giantpm.core.Tools.Muter.*;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
@@ -36,7 +36,7 @@ public class mute {
 				if(arg.equalsIgnoreCase("mute") || arg.equalsIgnoreCase("m"))
 					continue;
 				
-				OfflinePlayer r = GiantPM.getPlugin().getSrvr().getPlayer(arg);
+				OfflinePlayer r = GiantPM.getPlugin().getServer().getPlayer(arg);
 				
 				if(r == null)
 					r = Misc.getPlayer(arg);
@@ -60,7 +60,6 @@ public class mute {
 					data.put("player", r.getName());
 
 					Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "playerAlreadyMuted", data));
-					continue;
 				}
 			}
 		}
@@ -73,7 +72,7 @@ public class mute {
 				if(arg.equalsIgnoreCase("unmute") || arg.equalsIgnoreCase("um"))
 					continue;
 				
-				OfflinePlayer r = GiantPM.getPlugin().getSrvr().getPlayer(arg);
+				OfflinePlayer r = GiantPM.getPlugin().getServer().getPlayer(arg);
 				
 				if(r == null)
 					r = Misc.getPlayer(arg);
@@ -97,7 +96,6 @@ public class mute {
 					data.put("player", r.getName());
 
 					Heraut.say(p, mH.getMsg(Messages.msgType.ERROR, "playerNotMuted", data));
-					continue;
 				}
 			}
 		}

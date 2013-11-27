@@ -6,15 +6,16 @@ import nl.giantit.minecraft.giantpm.core.Tools.Channel.Channel;
 import nl.giantit.minecraft.giantpm.core.Tools.Que.Que;
 import nl.giantit.minecraft.giantpm.core.Tools.Que.QueType;
 import nl.giantit.minecraft.giantpm.Listeners.PlayerListener;
-import nl.giantit.minecraft.giantpm.Misc.Heraut;
-import nl.giantit.minecraft.giantpm.Misc.Messages;
-import nl.giantit.minecraft.giantpm.Misc.Misc;
+import nl.giantit.minecraft.giantcore.Misc.Heraut;
+import nl.giantit.minecraft.giantcore.Misc.Messages;
+import nl.giantit.minecraft.giantcore.Misc.Misc;
 
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 /**
  *
@@ -33,7 +34,7 @@ public class inv {
 				if(Misc.isEitherIgnoreCase(arg, "inv", "i"))
 					continue;
 				
-				Player r = GiantPM.getPlugin().getSrvr().getPlayer(arg);
+				Player r = GiantPM.getPlugin().getServer().getPlayer(arg);
 				if(r == null) {
 					oL.add(arg);
 					continue;
