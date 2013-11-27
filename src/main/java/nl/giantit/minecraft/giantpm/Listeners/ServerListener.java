@@ -9,8 +9,8 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class ServerListener implements Listener {
 
-	private GiantPM plugin;
-	private Messages mH;
+	private final GiantPM plugin;
+	private final Messages mH;
 	
 	public ServerListener(GiantPM plugin) {
 		this.plugin = plugin;

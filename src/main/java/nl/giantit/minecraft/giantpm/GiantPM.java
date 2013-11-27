@@ -89,8 +89,8 @@ public class GiantPM extends GiantPlugin {
 				this.getPluginLoader().disablePlugin(this);
 				return;
 			}
-			
-			HashMap<String, String> dbConf = conf.getMap(this.name + ".db.mc");
+                        
+			HashMap<String, String> dbConf = conf.getMap(this.name + ".db"); // works, but another error
 			dbConf.put("debug", conf.getString(this.name + ".global.debug"));
 			
 			this.db = this.gc.getDB(this, null, dbConf);

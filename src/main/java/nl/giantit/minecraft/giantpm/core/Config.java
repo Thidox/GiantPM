@@ -26,7 +26,7 @@ public class Config {
 	private final GiantPM plugin;
 	private YamlConfiguration c;
 	private File file;
-	private final double version = 0.2;
+	private final double version = 0.3;
 
 	private Config(GiantPM p) {
 		this.plugin = p;
