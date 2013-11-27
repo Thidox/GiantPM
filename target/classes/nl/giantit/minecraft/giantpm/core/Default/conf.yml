@@ -1,0 +1,18 @@
+GiantPM:
+    global:
+        version: 0.2
+        name: GiantPM
+        debug: false
+        opHasPerms: true
+        perPage: 5
+    db:
+        driver: SQLite
+        database: GiantPM
+        prefix: shop_
+        host: localhost
+        port: 3306
+        user: root
+        password: 
+    permissions:
+        usePermissions: true
+        permissionEngine: sperm
