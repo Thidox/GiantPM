@@ -12,6 +12,7 @@ import nl.giantit.minecraft.giantpm.core.Tools.Muter.Muter;
 import nl.giantit.minecraft.giantpm.Executors.chat;
 import nl.giantit.minecraft.giantpm.Listeners.*;
 import nl.giantit.minecraft.giantpm.core.Updater.Updater;
+import nl.giantit.minecraft.giantpm.core.Database.DbInit;
 
 import java.util.logging.Level;
 import java.io.File;
@@ -34,6 +35,7 @@ public class GiantPM extends GiantPlugin {
 	private GiantCore gc;
 	
 	private Database db;
+        private DbInit DbInit;
 	private PermHandler permHandler;
 	private chat chat;
 	private Messages msgHandler;
@@ -81,7 +83,7 @@ public class GiantPM extends GiantPlugin {
 		}
 		
 		Config conf = Config.Obtain(this);
-		try {
+		//try {
 			this.updater = new Updater(this);
 			conf.loadConfig(configFile);
 			if(!conf.isLoaded()) {
@@ -90,11 +92,14 @@ public class GiantPM extends GiantPlugin {
 				return;
 			}
                         
-			HashMap<String, String> dbConf = conf.getMap(this.name + ".db"); // works, but another error
+			HashMap<String, String> dbConf = conf.getMap(this.name + ".db");
 			dbConf.put("debug", conf.getString(this.name + ".global.debug"));
 			
 			this.db = this.gc.getDB(this, null, dbConf);
 			
+                        this.DbInit = new DbInit(this);
+                        this.DbInit.initialize();
+                        
 			if(conf.getBoolean(this.name + ".permissions.usePermissions")) {
 				permHandler = this.gc.getPermHandler(PermHandler.findEngine(conf.getString(this.name + ".permissions.Engine")), conf.getBoolean(this.name + ".permissions.opHasPerms"));
 			}else{
@@ -109,13 +114,13 @@ public class GiantPM extends GiantPlugin {
 			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 			
 			getLogger().log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
-		}catch(Exception e) {
+		/*}catch(Exception e) {
 			getLogger().log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
 			if(conf.getBoolean("GiantPM.global.debug")) {
 				getLogger().log(Level.INFO, "" + e);
 			}
 			this.getServer().getPluginManager().disablePlugin(this);
-		}
+		}*/
 	}
 	
 	@Override
