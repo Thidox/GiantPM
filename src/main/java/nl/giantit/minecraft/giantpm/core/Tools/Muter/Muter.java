@@ -32,15 +32,9 @@ public class Muter {
 	private void loadMutes() {
                 Driver DB = GiantPM.getPlugin().getDB().getEngine();
 		
-		ArrayList<String> fields = new ArrayList<String>();
-		fields.add("muted");
-		
-		HashMap<String, String> where = new HashMap<String, String>();
-		where.put("owner", p.getName());
-		
-                SelectQuery mResQry = DB.select(fields);
+                SelectQuery mResQry = DB.select("muted");
                 mResQry.from("#__muted");
-                mResQry.where("owner", p.getName(), Group.ValueType.EQUALSRAW);
+                mResQry.where("owner", p.getName(), Group.ValueType.EQUALS);
                 
                 QueryResult mResSet = mResQry.exec();
 		
@@ -78,28 +72,6 @@ public class Muter {
 			ArrayList<String> fields = new ArrayList<String>();
 			fields.add("owner");
 			fields.add("muted");
-			
-                        /*
-                        
-                        // Assuming this is NOT needed!
-                        
-			ArrayList<HashMap<Integer, HashMap<String, String>>> values = new ArrayList<HashMap<Integer, HashMap<String, String>>>();
-			HashMap<Integer, HashMap<String, String>> tmp = new HashMap<Integer, HashMap<String, String>>();
-                        int i = 0;
-			for(String field : fields) {
-				HashMap<String, String> temp = new HashMap<String, String>();
-				if(field.equalsIgnoreCase("owner")) {
-					temp.put("data", p.getName());
-					tmp.put(i, temp);
-				}else if(field.equalsIgnoreCase("muted")) {
-					temp.put("data", m);
-					tmp.put(i, temp);
-				}
-
-				i++;
-			}
-			values.add(tmp);
-                        */
                         
                         InsertQuery sMuteInsertQry = DB.insert("#__muted");
                         sMuteInsertQry.addFields(fields);

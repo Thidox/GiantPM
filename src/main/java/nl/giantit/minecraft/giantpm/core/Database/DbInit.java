@@ -64,8 +64,7 @@ public class DbInit {
             receiver.setLength(100);
             
             Column message = mailCre.addColumn("message");
-            message.setDataType(Column.DataType.VARCHAR);
-            message.setLength(100);
+            message.setDataType(Column.DataType.TEXT);
             
             mailCre.exec();
             
