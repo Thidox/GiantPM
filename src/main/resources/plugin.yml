@@ -8,6 +8,50 @@ commands:
         desription: GiantPM
         usage: /pm help
 permissions:
+# Permissions groups
+    giantpm.admin.*:
+        description: Enables all admin commands / permissions
+        default: false
+        children:
+            giantpm.admin.fuckprivacy: true
+    giantpm.mod:
+        description: Enables mod commands
+        default: false
+        giantpm.commands.mute: true
+        giantpm.commands.unmute: true
+    giantpm.user:
+        description: Enables all basic user commands
+        default: false
+        children:
+            giantpm.commands.mute: true
+            giantpm.commands.unmute: true
+            giantpm.commands.invite: true
+            giantpm.commands.join: true
+            giantpm.commands.part: true
+            giantpm.commands.state: true
+            giantpm.commands.members: true
+# Invididual permissions
     giantpm.admin.fuckprivacy:
         description: Enables admin to override conversation privacy settings
-        default: op
+        default: false
+    giantpm.commands.mute:
+        description: Enables GiantPM mute command
+        default: false
+    giantpm.commands.unmute:
+        description: Enables GiantPM unmute command
+        default: false
+    giantpm.commands.invite:
+        description: Enables GiantPM invite command
+        default: false
+    giantpm.commands.join:
+        description: Enables GiantPM join command
+        default: false
+    giantpm.commands.part:
+        description: Enables GiantPM part command
+        default: false
+    giantpm.commands.state:
+        description: Enables GiantPM state command
+        default: false
+    giantpm.commands.members:
+        description: Enables GiantPM members command
+        default: false

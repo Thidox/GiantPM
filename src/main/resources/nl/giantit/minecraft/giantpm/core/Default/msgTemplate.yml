@@ -23,6 +23,7 @@ main:
 admin:
     none: no messages!
 errors:
+    noPermissions: C_REDWe are sorry but you do not have access to that command (C_YELLOW%commandC_RED)!
     noReplyTarget: C_REDWe are sorry but there seems to be noone you can reply to!
     channelIsPrivate: C_REDThe conversation you were trying to join is private!
     noPlayersMuted: C_REDYou currently have no muted players!

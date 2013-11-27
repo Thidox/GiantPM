@@ -160,8 +160,7 @@ public class PlayerListener implements Listener {
 						broken = true;
 						break;
 					}
-
-					//user = Heraut.clean(user);
+                                        
                                         user = user.replaceAll("(&([a-fA-F0-9]))", "");
 
 					OfflinePlayer r = plugin.getServer().getPlayer(user);
