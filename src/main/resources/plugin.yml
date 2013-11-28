@@ -13,18 +13,20 @@ permissions:
         description: Enables all admin commands / permissions
         default: false
         children:
+            giantpm.user: true
+            giantpm.mod: true
             giantpm.admin.fuckprivacy: true
     giantpm.mod:
         description: Enables mod commands
         default: false
-        giantpm.commands.mute: true
-        giantpm.commands.unmute: true
+        children:
+            giantpm.user: true
+            giantpm.commands.mute: true
+            giantpm.commands.unmute: true
     giantpm.user:
         description: Enables all basic user commands
         default: false
         children:
-            giantpm.commands.mute: true
-            giantpm.commands.unmute: true
             giantpm.commands.invite: true
             giantpm.commands.join: true
             giantpm.commands.part: true
