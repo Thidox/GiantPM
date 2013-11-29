@@ -16,3 +16,6 @@ GiantPM:
         usePermissions: true
         Engine: SPERM
         opHasPerms: true
+    messaging:
+        admin:
+            group: admin

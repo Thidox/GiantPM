@@ -17,7 +17,7 @@ public class Que {
 	}
 	
 	public static void addToQue(Player p, QueType qt, Boolean ow) {
-		if(!que.containsKey(p) || ow == true) {
+		if(!que.containsKey(p.getName()) || ow == true) {
 			que.put(p.getName(), qt);
 		}
 	}

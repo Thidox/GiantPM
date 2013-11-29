@@ -32,6 +32,9 @@ public class confUpdate implements iUpdater {
             c.set("GiantPM.permissions.Engine", "SPERM");
             c.set("GiantPM.permissions.opHasPerms", true);
             
+            c.createSection("GiantPM.messaging.admin");
+            c.set("GiantPM.messaging.admin.group", "admin");
+            
             c.set("GiantPM.global.version", 0.3);
             this.export(new File(GiantPM.getPlugin().getDir(), "conf.yml"), c);
         }

@@ -83,7 +83,7 @@ public class GiantPM extends GiantPlugin {
 		}
 		
 		Config conf = Config.Obtain(this);
-		//try {
+		try {
 			this.updater = new Updater(this);
 			conf.loadConfig(configFile);
 			if(!conf.isLoaded()) {
@@ -114,13 +114,13 @@ public class GiantPM extends GiantPlugin {
 			getServer().getPluginManager().registerEvents(new ServerListener(this), this);
 			
 			getLogger().log(Level.INFO, "[" + name + "](" + bName + ") was succesfully enabled");
-		/*}catch(Exception e) {
+		}catch(Exception e) {
 			getLogger().log(Level.SEVERE, "[" + this.name + "](" + this.bName + ") Failed to load!");
 			if(conf.getBoolean("GiantPM.global.debug")) {
 				getLogger().log(Level.INFO, "" + e);
 			}
 			this.getServer().getPluginManager().disablePlugin(this);
-		}*/
+		}
 	}
 	
 	@Override
