@@ -1,7 +1,7 @@
 name: ${name}
 main: nl.giantit.minecraft.${package}.${name}
 version: ${version}-${build}
-authors: [Giant]
+authors: [Giant, Jake6177]
 depend: [GiantCore]
 
 commands:
@@ -28,7 +28,6 @@ permissions:
             giantpm.commands.part: true
             giantpm.message.normal: true
             giantpm.commands.state: true
-            
     giantpm.message.admin:
         description: Enables GiantPM messaging to configurable admin group
         default: false
