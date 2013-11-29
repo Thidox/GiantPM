@@ -188,12 +188,13 @@ public class PlayerListener implements Listener {
 
                     Config conf = Config.Obtain(this.plugin);
                     conf.loadConfig(new File(this.plugin.getDataFolder(), "conf.yml"));
-                    this.plugin.getLogger().severe(this.perm.getGroup(event.getPlayer()));
-                    /*if (this.perm.getGroup(p).equals(conf.getString(this.plugin.getName() + ".messaging.admin.group")) && !this.perm.has(p, "giantpm.message.admin")) {
+
+                    /* HOW TO HANDLE IF THEY ARE USING SPERM OR NOPERM?? */
+                    if (this.perm.getGroup(p) != null && this.perm.getGroup(p).equals(conf.getString(this.plugin.getName() + ".messaging.admin.group")) && !this.perm.has(p, "giantpm.message.admin")) {
                         Heraut.say(p, "We are sorry but you don't have access to message administrators!");
                         event.setCancelled(true);
                         return;
-                    }*/
+                    }
 
                     if (r == null) {
                         r = Misc.getPlayer(user);
