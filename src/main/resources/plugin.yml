@@ -5,67 +5,57 @@ authors: [Giant]
 depend: [GiantCore]
 
 commands:
-    pm: {description: GiantPM, usage: /pm help}
+    pm:
+        description: GiantPM
+        usage: /pm help
 
 permissions:
-#----------------------------------------#
-# PERMISSION NODES       
-#----------------------------------------#    
-    giantpm.message.admin: {description: Enables GiantPM messaging to configurable admin group, default: false}
-    giantpm.admin.fuckprivacy: {description: Enables admin to override conversation privacy settings, default: false}
-    giantpm.commands.invite: {description: Enables GiantPM invite command, default: false}
-    giantpm.commands.join: {description: Enables GiantPM join command, default: false}
-    giantpm.commands.members: {description: Enables GiantPM members command, default: false}
-    giantpm.commands.mute: {description: Enables GiantPM mute command, default: false}
-    giantpm.message.normal: {description: Enables general GiantPM messaging, default: false}
-    giantpm.commands.part: {description: Enables GiantPM part command, default: false}
-    giantpm.commands.state: {description: Enables GiantPM state command, default: false}
-    giantpm.message.nolimit: {description: Enables GiantPM messaging to unlimited amount of players, default: false}
-    giantpm.commands.unmute: {description: Enables GiantPM unmute command, default: false}
-    
-#----------------------------------------#
-# STARS, PRETTY STARS
-#----------------------------------------#
-    giantpm.*:
-        children:
-            giantpm.message.admin: true
-            giantpm.admin.fuckprivacy: true
-            giantpm.commands.invite: true
-            giantpm.commands.join: true
-            giantpm.commands.members: true
-            giantpm.commands.mute: true
-            giantpm.message.normal: true
-            giantpm.commands.part: true
-            giantpm.commands.state: true
-            giantpm.message.nolimit: true
-            giantpm.commands.unmute: true
-
-#----------------------------------------#
-# PERMISSION GROUPS
-#----------------------------------------#
-    giantpm.op:
-        default: op
-        children:
-            giantpm.*: true
     giantpm.admin:
         default: false
         children:
-            giantpm.mod: true
+            giantpm.user: true
             giantpm.admin.fuckprivacy: true
             giantpm.message.admin: true
             giantpm.message.nolimit: true
-    giantpm.mod:
-        default: false
-        children:
-            giantpm.user: true
-            giantpm.commands.mute: true
-            giantpm.commands.unmute: true
     giantpm.user:
         default: false
         children:
+            giantpm.commands.mute: true
+            giantpm.commands.unmute: true
             giantpm.commands.invite: true
             giantpm.commands.join: true
             giantpm.commands.members: true
             giantpm.commands.part: true
             giantpm.message.normal: true
             giantpm.commands.state: true
+            
+    giantpm.message.admin:
+        description: Enables GiantPM messaging to configurable admin group
+        default: false
+    giantpm.admin.fuckprivacy:
+        description: Enables admin to override conversation privacy settings
+        default: false
+    giantpm.commands.invite:
+        description: Enables GiantPM invite command
+        default: false
+    giantpm.commands.join:
+        description: Enables GiantPM join command
+        default: false
+    giantpm.commands.members:
+        description: Enables GiantPM members command
+        default: false
+    giantpm.commands.mute:
+        description: Enables GiantPM mute command
+        default: false
+    giantpm.message.normal:
+        description: Enables general GiantPM messaging
+        default: false
+    giantpm.commands.part:
+        description: Enables GiantPM part command
+        default: false
+    giantpm.commands.state:
+        description: Enables GiantPM state command
+        default: false
+    giantpm.message.nolimit:
+        description: Enables GiantPM messaging to unlimited amount of players
+        default: false
